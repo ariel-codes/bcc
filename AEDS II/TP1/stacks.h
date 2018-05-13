@@ -1,21 +1,11 @@
 #pragma once
 
-#include "queues.h"
-
-typedef struct _s_item
-{
-    Queue *region;
-    struct _s_item *under;
-} SItem;
-
-typedef struct _stack
-{
-    SItem *top;
-    int heigh;
-} Stack;
+#include <stdlib.h>
+#include "netpbm.h"
+#include "structures.h"
 
 Stack *stk_create();
 
-SItem *stk_push(Stack *p, Queue *l);
+Stack *stk_push(Stack *p, seed_region *l);
 
-Queue *stk_pop(Stack *p);
+seed_region *stk_pop(Stack *p);

@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "stacks.h"
 
 Stack *stk_create()
@@ -10,23 +8,24 @@ Stack *stk_create()
     return p;
 }
 
-SItem *stk_push(Stack *p, Queue *l)
+Stack *stk_push(Stack *p, seed_region *s)
 {
     SItem *new = malloc(sizeof(SItem));
     new->under = p->top;
     p->top = new;
+    new->region = s;
     p->heigh++;
     return new;
 }
 
-Queue *stk_pop(Stack *p)
+seed_region *stk_pop(Stack *p)
 {
     if (!p->heigh)
         return NULL;
     SItem *drop = p->top;
-    Queue *item = drop->region;
+    seed_region *item = drop->region;
     p->top = p->top->under;
     p->heigh--;
-    free(drop);
+    // free(drop);
     return item;
 }
