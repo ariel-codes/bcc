@@ -4,6 +4,6 @@
 
 ### Bacharelado em Ciência da Computação
 
-    Duração: 4 anos
+    Duração: 5 anos
     Unidade Sede: Instituto de Ciências Exatas - ICEx
     Turno: Diurno
