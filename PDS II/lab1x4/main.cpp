@@ -1,12 +1,26 @@
 #include <iostream>
-#include "Circunferencia.hpp"
+#include <string>
+#include <fstream>
+#include "Indice.hpp"
 
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    Circunferencia c = {.xc = 2, .yc = 3, .raio = 12};
-    Circunferencia c2 = {.xc = 15, .yc = 8, .raio = 10};
-    cout << (c.possuiIntersecao(&c2) ? "INTERCEDE" : "NÃO") << endl;
+    string content;
+    Indice indice;
+
+    while (getline(cin, content))
+    {
+        if (content.empty())
+            break;
+        indice.adicionaTexto(content);
+    }
+    const vector<Indice::palavra> palavras = indice.retornaPalavras3();
+    for (vector<Indice::palavra>::const_iterator iter = palavras.begin(); iter != palavras.end(); ++iter)
+    {
+        printf("%s %d %.2f\n", iter->valor.c_str(), iter->aparicoes, iter->frequencia);
+    }
+
     return 0;
 }
