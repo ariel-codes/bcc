@@ -41,6 +41,7 @@ int main(int argc, char const *argv[])
 
     for (auto const &tk : taskList)
         delete tk;
+    delete scheduler;
 
     return 0;
 }
