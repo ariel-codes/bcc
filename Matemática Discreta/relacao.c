@@ -55,8 +55,8 @@ bool checkReflexive(AdjacencyMatrix matrix) {
   AdjacencyMatrix pairs_present = initializeMatrix(matrix.size, matrix.index_map),
 	  pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
 
-  for (int i = 0; i < matrix.size; ++i) {
-	const m_size index = index2D(matrix.size, i, i);
+  for (m_size i = 0; i < matrix.size; ++i) {
+	const unsigned short index = index2D(matrix.size, i, i);
 
 	const bool pair_valid = matrix.links[index];
 
@@ -86,9 +86,9 @@ bool checkSymmetric(AdjacencyMatrix matrix) {
   AdjacencyMatrix pairs_present = initializeMatrix(matrix.size, matrix.index_map),
 	  pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
 
-  for (int i = 0; i < matrix.size; ++i) {
-	for (int k = 0; k < i; ++k) {
-	  const m_size index_top = index2D(matrix.size, i, k),
+  for (m_size i = 0; i < matrix.size; ++i) {
+	for (m_size k = 0; k < i; ++k) {
+	  const unsigned short index_top = index2D(matrix.size, i, k),
 		  index_bottom = index2D(matrix.size, k, i);
 
 	  const bool pair_valid = matrix.links[index_top] == matrix.links[index_bottom];
@@ -124,15 +124,15 @@ bool checkTransitive(AdjacencyMatrix matrix) {
   bool transitive = true;
   AdjacencyMatrix pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
 
-  for (int i = 0; i < matrix.size; ++i) {
-	for (int k = 0; k < matrix.size; ++k) {
+  for (m_size i = 0; i < matrix.size; ++i) {
+	for (m_size k = 0; k < matrix.size; ++k) {
 	  if (i == k) continue;
 
 	  if (matrix.links[index2D(matrix.size, i, k)]) {
 		for (m_size j = 0; j < matrix.size; ++j) {
 		  if (k == j) continue;
 
-		  const m_size index = index2D(matrix.size, i, j);
+		  const unsigned short index = index2D(matrix.size, i, j);
 
 		  if (matrix.links[index2D(matrix.size, k, j)] && !matrix.links[index]) {
 			transitive = false;
@@ -191,7 +191,7 @@ AdjacencyMatrix initializeMatrix(m_size size, m_size *label_map) {
 }
 
 m_size findLabelIndex(AdjacencyMatrix matrix, m_size label) {
-  for (int i = 0; i < matrix.size; ++i) {
+  for (m_size i = 0; i < matrix.size; ++i) {
 	if (matrix.index_map[i] == label) {
 	  return i;
 	}
