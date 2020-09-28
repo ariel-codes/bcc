@@ -1,0 +1,14 @@
+Reflexiva: F
+(20,20); (21,21);
+Irreflexiva: F
+(22,22);
+Simétrica: F
+(21,20);
+Anti-simétrica: F
+(20,22); (22,20);
+Assimétrica: F
+Transitiva: F
+(20,20); (22,21);
+Relação de equivalência: F
+Relação de ordem parcial: F
+Fecho transitivo da relação: (20,20); (20,21); (20,22); (22,20); (22,21); (22,22);

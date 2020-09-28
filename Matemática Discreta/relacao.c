@@ -2,33 +2,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef unsigned char m_size;
+
 typedef struct {
-  unsigned char size;
-  unsigned char *ids;
+  m_size size;
+  m_size *ids;
 } InputElements;
 
 typedef struct {
-  unsigned char index_map[50];
-  unsigned char reverse_map[50];
+  m_size index_map[50];
+  m_size reverse_map[50];
   bool *links;
 } AdjacencyMatrix;
 
-typedef struct RL {
-  struct RL *previous;
+typedef struct ListStruct {
+  struct ListStruct *previous;
   struct {
-	unsigned char x, y;
+	m_size x, y;
   } node;
-} ReverseList;
+} List;
 
 InputElements readElements();
 AdjacencyMatrix readLinks(InputElements);
 
-bool checkReflexive(unsigned char, AdjacencyMatrix);
+bool checkReflexive(m_size, AdjacencyMatrix);
+bool checkSymmetric(m_size, AdjacencyMatrix);
 
-unsigned short index2D(unsigned char, unsigned char, unsigned char);
-ReverseList *appendPairs(ReverseList *, unsigned char, unsigned char);
-void printPairs(ReverseList *);
-void freePairs(ReverseList *);
+unsigned short index2D(m_size, m_size, m_size);
+List *appendPairs(List *, m_size, m_size);
+void printPairs(List *);
+void freePairs(List *);
 void printResult(char *, bool);
 
 int main() {
@@ -36,6 +39,7 @@ int main() {
   const AdjacencyMatrix matrix = readLinks(inputs);
 
   const bool reflexive = checkReflexive(inputs.size, matrix);
+  const bool symmetric = checkSymmetric(inputs.size, matrix);
 
   free(inputs.ids);
   free(matrix.links);
@@ -56,10 +60,10 @@ InputElements readElements() {
 
 AdjacencyMatrix readLinks(InputElements elements) {
   AdjacencyMatrix matrix;
-  unsigned char x, y;
+  m_size x, y;
   matrix.links = calloc(elements.size * elements.size, sizeof(bool));
 
-  for (unsigned char i = 0; i < elements.size; ++i) {
+  for (m_size i = 0; i < elements.size; ++i) {
 	matrix.index_map[elements.ids[i]] = i;
 	matrix.reverse_map[i] = elements.ids[i];
   }
@@ -70,13 +74,13 @@ AdjacencyMatrix readLinks(InputElements elements) {
   return matrix;
 }
 
-bool checkReflexive(unsigned char size, AdjacencyMatrix matrix) {
+bool checkReflexive(m_size size, AdjacencyMatrix matrix) {
   bool reflexive = true;
-  ReverseList *pairs_present = NULL;
-  ReverseList *pairs_absent = NULL;
+  List *pairs_present = NULL;
+  List *pairs_absent = NULL;
 
   for (int i = 0; i < size; ++i) {
-	bool pair_valid = matrix.links[index2D(size, i, i)];
+	const bool pair_valid = matrix.links[index2D(size, i, i)];
 
 	reflexive &= pair_valid;
 
@@ -99,12 +103,44 @@ bool checkReflexive(unsigned char size, AdjacencyMatrix matrix) {
   return reflexive;
 }
 
-unsigned short index2D(unsigned char size, unsigned char line, unsigned char column) {
+bool checkSymmetric(m_size size, AdjacencyMatrix matrix) {
+  bool symmetric = true;
+  List *pairs_present = NULL;
+  List *pairs_absent = NULL;
+
+  for (int i = 0; i < size; ++i) {
+	for (int k = 0; k < i; ++k) {
+	  const bool pair_valid = matrix.links[index2D(size, i, k)] == matrix.links[index2D(size, k, i)];
+	  symmetric &= pair_valid;
+
+	  if (pair_valid && matrix.links[index2D(size, i, k)] && matrix.links[index2D(size, k, i)]) {
+		pairs_present = appendPairs(pairs_present, matrix.reverse_map[i], matrix.reverse_map[k]);
+		pairs_present = appendPairs(pairs_present, matrix.reverse_map[k], matrix.reverse_map[i]);
+	  } else if (matrix.links[index2D(size, i, k)])
+		pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[i], matrix.reverse_map[k]);
+	  else if (matrix.links[index2D(size, k, i)])
+		pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[k], matrix.reverse_map[i]);
+	}
+  }
+
+  printResult("Simétrica", symmetric);
+  if (!symmetric) printPairs(pairs_absent);
+
+  printResult("Ant-simétrica", !symmetric);
+  if (symmetric) printPairs(pairs_present);
+
+  freePairs(pairs_present);
+  freePairs(pairs_absent);
+
+  return symmetric;
+}
+
+unsigned short index2D(m_size size, m_size line, m_size column) {
   return line * size + column;
 }
 
-ReverseList *appendPairs(ReverseList *base, unsigned char x, unsigned char y) {
-  ReverseList *new_pair = malloc(sizeof(ReverseList));
+List *appendPairs(List *base, m_size x, m_size y) {
+  List *new_pair = malloc(sizeof(List));
   new_pair->node.x = x;
   new_pair->node.y = y;
   new_pair->previous = base;
@@ -112,7 +148,7 @@ ReverseList *appendPairs(ReverseList *base, unsigned char x, unsigned char y) {
   return new_pair;
 }
 
-void printPairs(ReverseList *list) {
+void printPairs(List *list) {
   while (list != NULL) {
 	printf("(%hhu,%hhu);", list->node.x, list->node.y);
 
@@ -124,9 +160,9 @@ void printPairs(ReverseList *list) {
   putchar('\n');
 }
 
-void freePairs(ReverseList *list) {
+void freePairs(List *list) {
   while (list != NULL) {
-	ReverseList *top = list;
+	List *top = list;
 	list = list->previous;
 	free(top);
   }
