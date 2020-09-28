@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Estruturas de dados
 typedef unsigned char m_size;
 
 typedef struct {
@@ -22,24 +23,30 @@ typedef struct ListStruct {
   } node;
 } List;
 
+// Input
 InputElements readElements();
 AdjacencyMatrix readLinks(InputElements);
 
+// Verificadores
 bool checkReflexive(m_size, AdjacencyMatrix);
 bool checkSymmetric(m_size, AdjacencyMatrix);
+void checkAsymmetric(bool, bool);
 
+// Utilidades
 unsigned short index2D(m_size, m_size, m_size);
 List *appendPairs(List *, m_size, m_size);
 void printPairs(List *);
 void freePairs(List *);
 void printResult(char *, bool);
 
+// Implementações
 int main() {
   const InputElements inputs = readElements();
   const AdjacencyMatrix matrix = readLinks(inputs);
 
   const bool reflexive = checkReflexive(inputs.size, matrix);
   const bool symmetric = checkSymmetric(inputs.size, matrix);
+  checkAsymmetric(reflexive, symmetric);
 
   free(inputs.ids);
   free(matrix.links);
@@ -126,13 +133,17 @@ bool checkSymmetric(m_size size, AdjacencyMatrix matrix) {
   printResult("Simétrica", symmetric);
   if (!symmetric) printPairs(pairs_absent);
 
-  printResult("Ant-simétrica", !symmetric);
+  printResult("Anti-simétrica", !symmetric);
   if (symmetric) printPairs(pairs_present);
 
   freePairs(pairs_present);
   freePairs(pairs_absent);
 
   return symmetric;
+}
+
+void checkAsymmetric(bool is_reflexive, bool is_symmetric) {
+  printResult("Assimétrica", !is_reflexive && !is_symmetric);
 }
 
 unsigned short index2D(m_size size, m_size line, m_size column) {
