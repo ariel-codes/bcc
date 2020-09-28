@@ -21,6 +21,8 @@ bool checkReflexive(AdjacencyMatrix);
 bool checkSymmetric(AdjacencyMatrix);
 void checkAsymmetric(bool, bool);
 bool checkTransitive(AdjacencyMatrix);
+void checkEquivalence(bool, bool, bool);
+void checkPartialOrder(bool, bool, bool);
 
 // Input
 InputElements readElements();
@@ -43,6 +45,8 @@ int main() {
   const bool symmetric = checkSymmetric(matrix);
   checkAsymmetric(reflexive, symmetric);
   const bool transitive = checkTransitive(matrix);
+  checkEquivalence(reflexive, symmetric, transitive);
+  checkPartialOrder(reflexive, transitive, symmetric);
 
   free(matrix.links);
   free(matrix.index_map);
@@ -149,6 +153,14 @@ bool checkTransitive(AdjacencyMatrix matrix) {
   free(pairs_absent.links);
 
   return transitive;
+}
+
+void checkEquivalence(bool reflexive, bool symmetric, bool transitive) {
+  printResult("Relação de equivalência", reflexive && symmetric && transitive);
+}
+
+void checkPartialOrder(bool reflexive, bool symmetric, bool transitive) {
+  printResult("Relação de ordem parcial", reflexive && !symmetric && transitive);
 }
 
 InputElements readElements() {
