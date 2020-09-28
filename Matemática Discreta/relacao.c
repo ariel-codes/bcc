@@ -31,6 +31,7 @@ AdjacencyMatrix readLinks(InputElements);
 bool checkReflexive(m_size, AdjacencyMatrix);
 bool checkSymmetric(m_size, AdjacencyMatrix);
 void checkAsymmetric(bool, bool);
+bool checkTransitive(m_size, AdjacencyMatrix);
 
 // Utilidades
 unsigned short index2D(m_size, m_size, m_size);
@@ -47,6 +48,7 @@ int main() {
   const bool reflexive = checkReflexive(inputs.size, matrix);
   const bool symmetric = checkSymmetric(inputs.size, matrix);
   checkAsymmetric(reflexive, symmetric);
+  const bool transitive = checkTransitive(inputs.size, matrix);
 
   free(inputs.ids);
   free(matrix.links);
@@ -83,17 +85,18 @@ AdjacencyMatrix readLinks(InputElements elements) {
 
 bool checkReflexive(m_size size, AdjacencyMatrix matrix) {
   bool reflexive = true;
+  bool irreflexive = true;
   List *pairs_present = NULL;
   List *pairs_absent = NULL;
 
   for (int i = 0; i < size; ++i) {
 	const bool pair_valid = matrix.links[index2D(size, i, i)];
 
-	reflexive &= pair_valid;
-
 	if (pair_valid) {
+	  irreflexive = false;
 	  pairs_present = appendPairs(pairs_present, matrix.reverse_map[i], matrix.reverse_map[i]);
 	} else {
+	  reflexive = false;
 	  pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[i], matrix.reverse_map[i]);
 	}
   }
@@ -101,8 +104,8 @@ bool checkReflexive(m_size size, AdjacencyMatrix matrix) {
   printResult("Reflexiva", reflexive);
   if (!reflexive) printPairs(pairs_absent);
 
-  printResult("Irreflexiva", !reflexive);
-  if (reflexive) printPairs(pairs_present);
+  printResult("Irreflexiva", irreflexive);
+  if (!irreflexive) printPairs(pairs_present);
 
   freePairs(pairs_present);
   freePairs(pairs_absent);
@@ -144,6 +147,33 @@ bool checkSymmetric(m_size size, AdjacencyMatrix matrix) {
 
 void checkAsymmetric(bool is_reflexive, bool is_symmetric) {
   printResult("Assimétrica", !is_reflexive && !is_symmetric);
+}
+
+bool checkTransitive(m_size size, AdjacencyMatrix matrix) {
+  bool transitive = true;
+  List *pairs_absent = NULL;
+
+  for (int i = 0; i < size; ++i) {
+	for (int k = 0; k < size; ++k) {
+	  if (i == k) continue;
+	  if (matrix.links[index2D(size, i, k)]) {
+		for (m_size j = 0; j < size; ++j) {
+		  if (k == j) continue;
+		  if (matrix.links[index2D(size, k, j)] && !matrix.links[index2D(size, i, j)]) {
+			transitive = false;
+			pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[i], matrix.reverse_map[j]);
+		  }
+		}
+	  }
+	}
+  }
+
+  printResult("Transitiva", transitive);
+  if (!transitive) printPairs(pairs_absent);
+
+  freePairs(pairs_absent);
+
+  return transitive;
 }
 
 unsigned short index2D(m_size size, m_size line, m_size column) {
