@@ -11,48 +11,144 @@ typedef struct {
 } InputElements;
 
 typedef struct {
-  m_size index_map[50];
-  m_size reverse_map[50];
+  m_size size;
   bool *links;
+  m_size *index_map;
 } AdjacencyMatrix;
 
-typedef struct ListStruct {
-  struct ListStruct *previous;
-  struct {
-	m_size x, y;
-  } node;
-} List;
+// Verificadores
+bool checkReflexive(AdjacencyMatrix);
+bool checkSymmetric(AdjacencyMatrix);
+void checkAsymmetric(bool, bool);
+bool checkTransitive(AdjacencyMatrix);
 
 // Input
 InputElements readElements();
 AdjacencyMatrix readLinks(InputElements);
 
-// Verificadores
-bool checkReflexive(m_size, AdjacencyMatrix);
-bool checkSymmetric(m_size, AdjacencyMatrix);
-void checkAsymmetric(bool, bool);
-bool checkTransitive(m_size, AdjacencyMatrix);
-
 // Utilidades
+AdjacencyMatrix initializeMatrix(m_size, m_size *);
+m_size findLabelIndex(AdjacencyMatrix, m_size);
 unsigned short index2D(m_size, m_size, m_size);
-List *appendPairs(List *, m_size, m_size);
-void printPairs(List *);
-void freePairs(List *);
+void printPairs(AdjacencyMatrix);
 void printResult(char *, bool);
 
 // Implementações
 int main() {
   const InputElements inputs = readElements();
   const AdjacencyMatrix matrix = readLinks(inputs);
-
-  const bool reflexive = checkReflexive(inputs.size, matrix);
-  const bool symmetric = checkSymmetric(inputs.size, matrix);
-  checkAsymmetric(reflexive, symmetric);
-  const bool transitive = checkTransitive(inputs.size, matrix);
-
   free(inputs.ids);
+
+  const bool reflexive = checkReflexive(matrix);
+  const bool symmetric = checkSymmetric(matrix);
+  checkAsymmetric(reflexive, symmetric);
+  const bool transitive = checkTransitive(matrix);
+
   free(matrix.links);
+  free(matrix.index_map);
   return 0;
+}
+
+bool checkReflexive(AdjacencyMatrix matrix) {
+  bool reflexive = true;
+  bool irreflexive = true;
+  AdjacencyMatrix pairs_present = initializeMatrix(matrix.size, matrix.index_map),
+	  pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
+
+  for (int i = 0; i < matrix.size; ++i) {
+	const m_size index = index2D(matrix.size, i, i);
+
+	const bool pair_valid = matrix.links[index];
+
+	if (pair_valid) {
+	  irreflexive = false;
+	  pairs_present.links[index] = true;
+	} else {
+	  reflexive = false;
+	  pairs_absent.links[index] = true;
+	}
+  }
+
+  printResult("Reflexiva", reflexive);
+  if (!reflexive) printPairs(pairs_absent);
+
+  printResult("Irreflexiva", irreflexive);
+  if (!irreflexive) printPairs(pairs_present);
+
+  free(pairs_present.links);
+  free(pairs_absent.links);
+
+  return reflexive;
+}
+
+bool checkSymmetric(AdjacencyMatrix matrix) {
+  bool symmetric = true;
+  AdjacencyMatrix pairs_present = initializeMatrix(matrix.size, matrix.index_map),
+	  pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
+
+  for (int i = 0; i < matrix.size; ++i) {
+	for (int k = 0; k < i; ++k) {
+	  const m_size index_top = index2D(matrix.size, i, k),
+		  index_bottom = index2D(matrix.size, k, i);
+
+	  const bool pair_valid = matrix.links[index_top] == matrix.links[index_bottom];
+	  symmetric &= pair_valid;
+
+	  if (matrix.links[index2D(matrix.size, i, k)] && matrix.links[index2D(matrix.size, k, i)]) {
+		pairs_present.links[index_top] = true;
+		pairs_present.links[index_bottom] = true;
+	  } else if (matrix.links[index_top])
+		pairs_absent.links[index_top] = true;
+	  else if (matrix.links[index_bottom])
+		pairs_absent.links[index_bottom] = true;
+	}
+  }
+
+  printResult("Simétrica", symmetric);
+  if (!symmetric) printPairs(pairs_absent);
+
+  printResult("Anti-simétrica", !symmetric);
+  if (symmetric) printPairs(pairs_present);
+
+  free(pairs_present.links);
+  free(pairs_absent.links);
+
+  return symmetric;
+}
+
+void checkAsymmetric(bool is_reflexive, bool is_symmetric) {
+  printResult("Assimétrica", !is_reflexive && !is_symmetric);
+}
+
+bool checkTransitive(AdjacencyMatrix matrix) {
+  bool transitive = true;
+  AdjacencyMatrix pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
+
+  for (int i = 0; i < matrix.size; ++i) {
+	for (int k = 0; k < matrix.size; ++k) {
+	  if (i == k) continue;
+
+	  if (matrix.links[index2D(matrix.size, i, k)]) {
+		for (m_size j = 0; j < matrix.size; ++j) {
+		  if (k == j) continue;
+
+		  const m_size index = index2D(matrix.size, i, j);
+
+		  if (matrix.links[index2D(matrix.size, k, j)] && !matrix.links[index]) {
+			transitive = false;
+			pairs_absent.links[index] = true;
+		  }
+		}
+	  }
+	}
+  }
+
+  printResult("Transitiva", transitive);
+  if (!transitive) printPairs(pairs_absent);
+
+  free(pairs_absent.links);
+
+  return transitive;
 }
 
 InputElements readElements() {
@@ -68,145 +164,64 @@ InputElements readElements() {
 }
 
 AdjacencyMatrix readLinks(InputElements elements) {
-  AdjacencyMatrix matrix;
+  AdjacencyMatrix matrix = initializeMatrix(elements.size, calloc(elements.size, sizeof(m_size)));
   m_size x, y;
-  matrix.links = calloc(elements.size * elements.size, sizeof(bool));
 
   for (m_size i = 0; i < elements.size; ++i) {
-	matrix.index_map[elements.ids[i]] = i;
-	matrix.reverse_map[i] = elements.ids[i];
+	matrix.index_map[i] = elements.ids[i];
   }
 
-  while (scanf("%hhu %hhu", &x, &y) == 2)
-	matrix.links[index2D(elements.size, matrix.index_map[x], matrix.index_map[y])] = true;
+  while (scanf("%hhu %hhu", &x, &y) == 2) {
+	m_size x_index = findLabelIndex(matrix, x),
+		y_index = findLabelIndex(matrix, y);
+	matrix.links[index2D(elements.size, x_index, y_index)] = true;
+  }
 
   return matrix;
 }
 
-bool checkReflexive(m_size size, AdjacencyMatrix matrix) {
-  bool reflexive = true;
-  bool irreflexive = true;
-  List *pairs_present = NULL;
-  List *pairs_absent = NULL;
+AdjacencyMatrix initializeMatrix(m_size size, m_size *label_map) {
+  AdjacencyMatrix matrix;
 
-  for (int i = 0; i < size; ++i) {
-	const bool pair_valid = matrix.links[index2D(size, i, i)];
+  matrix.size = size;
+  matrix.index_map = label_map;
+  matrix.links = calloc(size * size, sizeof(bool));
 
-	if (pair_valid) {
-	  irreflexive = false;
-	  pairs_present = appendPairs(pairs_present, matrix.reverse_map[i], matrix.reverse_map[i]);
-	} else {
-	  reflexive = false;
-	  pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[i], matrix.reverse_map[i]);
+  return matrix;
+}
+
+m_size findLabelIndex(AdjacencyMatrix matrix, m_size label) {
+  for (int i = 0; i < matrix.size; ++i) {
+	if (matrix.index_map[i] == label) {
+	  return i;
 	}
   }
-
-  printResult("Reflexiva", reflexive);
-  if (!reflexive) printPairs(pairs_absent);
-
-  printResult("Irreflexiva", irreflexive);
-  if (!irreflexive) printPairs(pairs_present);
-
-  freePairs(pairs_present);
-  freePairs(pairs_absent);
-
-  return reflexive;
 }
 
-bool checkSymmetric(m_size size, AdjacencyMatrix matrix) {
-  bool symmetric = true;
-  List *pairs_present = NULL;
-  List *pairs_absent = NULL;
-
-  for (int i = 0; i < size; ++i) {
-	for (int k = 0; k < i; ++k) {
-	  const bool pair_valid = matrix.links[index2D(size, i, k)] == matrix.links[index2D(size, k, i)];
-	  symmetric &= pair_valid;
-
-	  if (pair_valid && matrix.links[index2D(size, i, k)] && matrix.links[index2D(size, k, i)]) {
-		pairs_present = appendPairs(pairs_present, matrix.reverse_map[i], matrix.reverse_map[k]);
-		pairs_present = appendPairs(pairs_present, matrix.reverse_map[k], matrix.reverse_map[i]);
-	  } else if (matrix.links[index2D(size, i, k)])
-		pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[i], matrix.reverse_map[k]);
-	  else if (matrix.links[index2D(size, k, i)])
-		pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[k], matrix.reverse_map[i]);
-	}
-  }
-
-  printResult("Simétrica", symmetric);
-  if (!symmetric) printPairs(pairs_absent);
-
-  printResult("Anti-simétrica", !symmetric);
-  if (symmetric) printPairs(pairs_present);
-
-  freePairs(pairs_present);
-  freePairs(pairs_absent);
-
-  return symmetric;
+unsigned short index2D(m_size size, m_size line, m_size column) {
+  return (line * size) + column;
 }
 
-void checkAsymmetric(bool is_reflexive, bool is_symmetric) {
-  printResult("Assimétrica", !is_reflexive && !is_symmetric);
-}
+void printPairs(AdjacencyMatrix matrix) {
+  bool first = true;
 
-bool checkTransitive(m_size size, AdjacencyMatrix matrix) {
-  bool transitive = true;
-  List *pairs_absent = NULL;
+  for (m_size i = 0; i < matrix.size; ++i) {
+	const m_size i_label = matrix.index_map[i];
 
-  for (int i = 0; i < size; ++i) {
-	for (int k = 0; k < size; ++k) {
-	  if (i == k) continue;
-	  if (matrix.links[index2D(size, i, k)]) {
-		for (m_size j = 0; j < size; ++j) {
-		  if (k == j) continue;
-		  if (matrix.links[index2D(size, k, j)] && !matrix.links[index2D(size, i, j)]) {
-			transitive = false;
-			pairs_absent = appendPairs(pairs_absent, matrix.reverse_map[i], matrix.reverse_map[j]);
-		  }
-		}
+	for (m_size k = 0; k < matrix.size; ++k) {
+	  const m_size k_label = matrix.index_map[k];
+
+	  if (matrix.links[index2D(matrix.size, i, k)]) {
+		if (!first)
+		  putchar(' ');
+		printf("(%hhu,%hhu);", i_label, k_label);
+
+		first = false;
 	  }
 	}
   }
 
-  printResult("Transitiva", transitive);
-  if (!transitive) printPairs(pairs_absent);
-
-  freePairs(pairs_absent);
-
-  return transitive;
-}
-
-unsigned short index2D(m_size size, m_size line, m_size column) {
-  return line * size + column;
-}
-
-List *appendPairs(List *base, m_size x, m_size y) {
-  List *new_pair = malloc(sizeof(List));
-  new_pair->node.x = x;
-  new_pair->node.y = y;
-  new_pair->previous = base;
-
-  return new_pair;
-}
-
-void printPairs(List *list) {
-  while (list != NULL) {
-	printf("(%hhu,%hhu);", list->node.x, list->node.y);
-
-	if (list->previous != NULL)
-	  putchar(' ');
-
-	list = list->previous;
-  }
   putchar('\n');
-}
-
-void freePairs(List *list) {
-  while (list != NULL) {
-	List *top = list;
-	list = list->previous;
-	free(top);
-  }
 }
 
 void printResult(char *property, bool valid) {
