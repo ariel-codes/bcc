@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Estruturas de dados
 typedef unsigned char m_size;
@@ -23,6 +24,7 @@ void checkAsymmetric(bool, bool);
 bool checkTransitive(AdjacencyMatrix);
 void checkEquivalence(bool, bool, bool);
 void checkPartialOrder(bool, bool, bool);
+void generateTransitiveClosure(AdjacencyMatrix);
 
 // Input
 InputElements readElements();
@@ -47,6 +49,7 @@ int main() {
   const bool transitive = checkTransitive(matrix);
   checkEquivalence(reflexive, symmetric, transitive);
   checkPartialOrder(reflexive, transitive, symmetric);
+  generateTransitiveClosure(matrix);
 
   free(matrix.links);
   free(matrix.index_map);
@@ -161,6 +164,26 @@ void checkEquivalence(bool reflexive, bool symmetric, bool transitive) {
 
 void checkPartialOrder(bool reflexive, bool symmetric, bool transitive) {
   printResult("Relação de ordem parcial", reflexive && !symmetric && transitive);
+}
+
+void generateTransitiveClosure(AdjacencyMatrix matrix) {
+  AdjacencyMatrix closure = initializeMatrix(matrix.size, matrix.index_map);
+  memcpy(closure.links, matrix.links, matrix.size * matrix.size * sizeof(bool));
+
+  for (m_size i = 0; i < closure.size; ++i) {
+	for (m_size k = 0; k < closure.size; ++k) {
+	  for (m_size j = 0; j < closure.size; ++j) {
+		const unsigned short index = index2D(closure.size, k, j);
+		closure.links[index] = closure.links[index]
+			|| (closure.links[index2D(closure.size, k, i)] && closure.links[index2D(closure.size, i, j)]);
+	  }
+	}
+  }
+
+  printf("Fecho transitivo da relação: ");
+  printPairs(closure);
+
+  free(closure.links);
 }
 
 InputElements readElements() {
