@@ -20,7 +20,7 @@ typedef struct {
 // Verificadores
 bool checkReflexive(AdjacencyMatrix);
 bool checkSymmetric(AdjacencyMatrix);
-void checkAsymmetric(bool, bool);
+void checkAsymmetric(AdjacencyMatrix);
 bool checkTransitive(AdjacencyMatrix);
 void checkEquivalence(bool, bool, bool);
 void checkPartialOrder(bool, bool, bool);
@@ -45,7 +45,7 @@ int main() {
 
   const bool reflexive = checkReflexive(matrix);
   const bool symmetric = checkSymmetric(matrix);
-  checkAsymmetric(reflexive, symmetric);
+  checkAsymmetric(matrix);
   const bool transitive = checkTransitive(matrix);
   checkEquivalence(reflexive, symmetric, transitive);
   checkPartialOrder(reflexive, transitive, symmetric);
@@ -123,8 +123,16 @@ bool checkSymmetric(AdjacencyMatrix matrix) {
   return symmetric;
 }
 
-void checkAsymmetric(bool is_reflexive, bool is_symmetric) {
-  printResult("Assimétrica", !is_reflexive && !is_symmetric);
+void checkAsymmetric(AdjacencyMatrix matrix) {
+  bool asymmetric = true;
+
+  for (m_size i = 0; i < matrix.size; ++i) {
+	for (m_size k = 0; k < matrix.size; ++k) {
+	  asymmetric &= matrix.links[index2D(matrix.size, i, k)] != matrix.links[index2D(matrix.size, k, i)];
+	}
+  }
+
+  printResult("Assimétrica", asymmetric);
 }
 
 bool checkTransitive(AdjacencyMatrix matrix) {

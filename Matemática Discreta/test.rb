@@ -26,9 +26,9 @@ end
 
 PROP_REGEX = /
     Reflexiva:\s(?<reflexiva>[VF]).+
-    Irreflexiva:\s[VF].+
+    Irreflexiva:\s(?<irreflexiva>[VF]).+
     Simétrica:\s(?<simetrica>[VF]).+
-    Anti-simétrica:\s[VF].+
+    Anti-simétrica:\s(?<antissimetrica>[VF]).+
     Assimétrica:\s(?<assimetrica>[VF]).+
     Transitiva:\s(?<transitiva>[VF]).+
     Relação\sde\sequivalência:\s(?<equivalencia>[VF]).+
