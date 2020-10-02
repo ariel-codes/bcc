@@ -20,6 +20,7 @@ typedef struct {
 // Verificadores
 bool checkReflexive(AdjacencyMatrix);
 bool checkSymmetric(AdjacencyMatrix);
+bool checkAntiSymmetric(AdjacencyMatrix matrix);
 void checkAsymmetric(AdjacencyMatrix);
 bool checkTransitive(AdjacencyMatrix);
 void checkEquivalence(bool, bool, bool);
@@ -45,10 +46,11 @@ int main() {
 
   const bool reflexive = checkReflexive(matrix);
   const bool symmetric = checkSymmetric(matrix);
+  const bool anti_symmetric = checkAntiSymmetric(matrix);
   checkAsymmetric(matrix);
   const bool transitive = checkTransitive(matrix);
   checkEquivalence(reflexive, symmetric, transitive);
-  checkPartialOrder(reflexive, transitive, symmetric);
+  checkPartialOrder(reflexive, transitive, anti_symmetric);
   generateTransitiveClosure(matrix);
 
   free(matrix.links);
@@ -90,23 +92,19 @@ bool checkReflexive(AdjacencyMatrix matrix) {
 
 bool checkSymmetric(AdjacencyMatrix matrix) {
   bool symmetric = true;
-  AdjacencyMatrix pairs_present = initializeMatrix(matrix.size, matrix.index_map),
-	  pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
+  AdjacencyMatrix pairs_absent = initializeMatrix(matrix.size, matrix.index_map);
 
   for (m_size i = 0; i < matrix.size; ++i) {
 	for (m_size k = 0; k < i; ++k) {
 	  const unsigned short index_top = index2D(matrix.size, i, k),
 		  index_bottom = index2D(matrix.size, k, i);
 
-	  const bool pair_valid = matrix.links[index_top] == matrix.links[index_bottom];
-	  symmetric &= pair_valid;
+	  if (matrix.links[index_top] == matrix.links[index_bottom]) continue;
 
-	  if (matrix.links[index2D(matrix.size, i, k)] && matrix.links[index2D(matrix.size, k, i)]) {
-		pairs_present.links[index_top] = true;
-		pairs_present.links[index_bottom] = true;
-	  } else if (matrix.links[index_top])
+	  symmetric = false;
+	  if (matrix.links[index_bottom])
 		pairs_absent.links[index_top] = true;
-	  else if (matrix.links[index_bottom])
+	  else
 		pairs_absent.links[index_bottom] = true;
 	}
   }
@@ -114,13 +112,34 @@ bool checkSymmetric(AdjacencyMatrix matrix) {
   printResult("Simétrica", symmetric);
   if (!symmetric) printPairs(pairs_absent);
 
-  printResult("Anti-simétrica", !symmetric);
-  if (symmetric) printPairs(pairs_present);
-
-  free(pairs_present.links);
   free(pairs_absent.links);
 
   return symmetric;
+}
+
+bool checkAntiSymmetric(AdjacencyMatrix matrix) {
+  bool anti_symmetric = true;
+  AdjacencyMatrix pairs_present = initializeMatrix(matrix.size, matrix.index_map);
+
+  for (m_size i = 0; i < matrix.size; ++i) {
+	for (m_size k = 0; k < i; ++k) {
+	  const unsigned short index_top = index2D(matrix.size, i, k),
+		  index_bottom = index2D(matrix.size, k, i);
+
+	  if (!(matrix.links[index_top] && matrix.links[index_bottom])) continue;
+
+	  anti_symmetric = false;
+	  pairs_present.links[index_top] = true;
+	  pairs_present.links[index_bottom] = true;
+	}
+  }
+
+  printResult("Anti-simétrica", anti_symmetric);
+  if (!anti_symmetric) printPairs(pairs_present);
+
+  free(pairs_present.links);
+
+  return anti_symmetric;
 }
 
 void checkAsymmetric(AdjacencyMatrix matrix) {
@@ -170,8 +189,8 @@ void checkEquivalence(bool reflexive, bool symmetric, bool transitive) {
   printResult("Relação de equivalência", reflexive && symmetric && transitive);
 }
 
-void checkPartialOrder(bool reflexive, bool symmetric, bool transitive) {
-  printResult("Relação de ordem parcial", reflexive && !symmetric && transitive);
+void checkPartialOrder(bool reflexive, bool transitive, bool anti_symmetric) {
+  printResult("Relação de ordem parcial", reflexive && anti_symmetric && transitive);
 }
 
 void generateTransitiveClosure(AdjacencyMatrix matrix) {
