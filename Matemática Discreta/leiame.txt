@@ -1,0 +1,5 @@
+O código fonte deve ser compilado pelo GCC com as opções padrão, e durante a execução irá ler do stream de entrada padrão até receber um valor de EOF.
+
+Exemplo de compilação e execução:
+$ gcc relacao.c
+$ ./a.out < entrada.txt > saida.txt
