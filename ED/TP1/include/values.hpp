@@ -5,6 +5,6 @@
 #ifndef TP1_INCLUDE_VALUES_HPP_
 #define TP1_INCLUDE_VALUES_HPP_
 
-enum MapValue { Empty, Resource, Alien, Mixed, OutOfBounds };
+enum MapValue { OutOfBounds = 0, Empty, Resource, Alien, Obstacle, Mixed };
 
 #endif //TP1_INCLUDE_VALUES_HPP_
