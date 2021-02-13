@@ -4,12 +4,12 @@
 
 
 #include <fstream>
-#include "Map.hpp"
+#include "Map.h"
 
 Map::Map(const std::string &filepath) {
   std::ifstream file(filepath);
 
-  unsigned int height, width;
+  unsigned height, width;
   file >> height;
   file >> width;
   points.reset(new QuadTree(height, width));
@@ -19,18 +19,26 @@ Map::Map(const std::string &filepath) {
       char point;
       file >> point;
 
-      MapValue v;
+      PointValue v;
       switch (point) {
-        case 'R':v = Resource;
+        case 'R': v = Resource;
           break;
-        case 'O':v = Obstacle;
+        case 'O': v = Obstacle;
           break;
-        case 'H':v = Alien;
+        case 'H': v = Alien;
           break;
-        default:continue;
+        default: v = Empty;
       }
 
       assert(points->addPoint(x, y, v));
     }
   }
+}
+
+PointValue Map::getPoint(unsigned x, unsigned y) {
+  return points->getPoint(x, y);
+}
+
+bool Map::removePoint(unsigned x, unsigned y) {
+  return points->addPoint(x, y, Empty);
 }
