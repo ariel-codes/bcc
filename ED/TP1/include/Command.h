@@ -15,8 +15,8 @@ class Command {
   Command(CmdType t, unsigned x, unsigned y, bool p = false) : type(t), dest_x(x), dest_y(y), priority(p) {}
 
   const CmdType type;
-  const bool priority;
   const unsigned dest_x, dest_y;
+  const bool priority;
 };
 
 #endif //TP1_SRC_COMMAND_H_

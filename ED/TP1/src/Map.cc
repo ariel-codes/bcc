@@ -4,6 +4,8 @@
 
 
 #include <fstream>
+#include <cassert>
+
 #include "Map.h"
 
 Map::Map(const std::string &filepath) {
@@ -14,8 +16,8 @@ Map::Map(const std::string &filepath) {
   file >> width;
   points.reset(new QuadTree(height, width));
 
-  for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
+  for (unsigned y = 0; y < height; ++y) {
+    for (unsigned x = 0; x < width; ++x) {
       char point;
       file >> point;
 

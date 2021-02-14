@@ -6,6 +6,7 @@
 #define TP1_SRC_QUADTREE_h_
 
 #include <array>
+#include <memory>
 
 enum PointValue { OutOfBounds = 0, Empty, Resource, Alien, Obstacle, Mixed };
 
