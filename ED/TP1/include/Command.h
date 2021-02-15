@@ -7,14 +7,20 @@
 
 #include <memory>
 
-enum CmdType { Move, Collect, Eliminate, Activate, Execute, Report, Return };
-
 class Command {
  public:
-  explicit Command(CmdType t, bool p = false) : type(t), dest_x(0), dest_y(0), priority(p) {}
-  Command(CmdType t, unsigned x, unsigned y, bool p = false) : type(t), dest_x(x), dest_y(y), priority(p) {}
+  enum Type { Move, Collect, Eliminate, Activate, Execute, Report, Return };
 
-  const CmdType type;
+  explicit Command(Type t, bool p = false) : type(t), dest_x(0), dest_y(0), priority(p) {}
+  Command(Type t, unsigned x, unsigned y, bool p = false) : type(t), dest_x(x), dest_y(y), priority(p) {}
+
+  Type get_type() const { return type; }
+  unsigned get_dest_x() const { return dest_x; }
+  unsigned get_dest_y() const { return dest_y; }
+  bool get_priority() const { return priority; }
+
+ private:
+  const Type type;
   const unsigned dest_x, dest_y;
   const bool priority;
 };

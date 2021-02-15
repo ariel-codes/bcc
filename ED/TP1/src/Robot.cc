@@ -5,20 +5,20 @@
 #include "Robot.h"
 
 void Robot::addCommand(Command cmd) {
-  switch (cmd.type) {
-    case Move:
-    case Collect:
-    case Eliminate:
-      if (cmd.priority) commands->unshift(cmd);
+  switch (cmd.get_type()) {
+    case Command::Move:
+    case Command::Collect:
+    case Command::Eliminate:
+      if (cmd.get_priority()) commands->unshift(cmd);
       else commands->enqueue(cmd);
       break;
-    case Activate: activate();
+    case Command::Activate: activate();
       break;
-    case Execute: execute();
+    case Command::Execute: execute();
       break;
-    case Report: report();
+    case Command::Report: report();
       break;
-    case Return: endMission();
+    case Command::Return: endMission();
   }
 }
 
@@ -52,6 +52,8 @@ void Robot::activate() {
   basePrint(msg.str());
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wswitch"
 void Robot::execute() {
   if (!active) {
     std::ostringstream msg;
@@ -60,21 +62,20 @@ void Robot::execute() {
     return;
   }
 
-  auto cmd = commands->get_front();
-  while (cmd) {
-    switch (cmd->data.type) {
-      case Move: move(cmd->data.dest_x, cmd->data.dest_y);
+  while (auto cmd = commands->get_front()) {
+    auto data = cmd->get_data();
+    switch (data.get_type()) {
+      case Command::Move: move(data.get_dest_x(), data.get_dest_y());
         break;
-      case Collect: collect();
+      case Command::Collect: collect();
         break;
-      case Eliminate: eliminate();
+      case Command::Eliminate: eliminate();
         break;
-      default:;
     }
-    cmd = cmd->next;
     commands->dequeue();
   }
 }
+#pragma clang diagnostic pop
 
 void Robot::move(unsigned x, unsigned y) {
   auto point = map->getPoint(x, y);
@@ -87,8 +88,7 @@ void Robot::move(unsigned x, unsigned y) {
     pos_x = x;
     pos_y = y;
   }
-
-  msg << " (" << x << ',' << y << ')';
+  msg << " (" << y << ',' << x << ')';
   history->enqueue(msg.str());
 }
 
@@ -103,8 +103,7 @@ void Robot::collect() {
     resource_count++;
     map->removePoint(pos_x, pos_y);
   }
-
-  msg << "EM (" << pos_x << ',' << pos_y << ')';
+  msg << " EM (" << pos_y << ',' << pos_x << ')';
   history->enqueue(msg.str());
 }
 
@@ -119,26 +118,26 @@ void Robot::eliminate() {
     alien_count++;
     map->removePoint(pos_x, pos_y);
   }
-
-  msg << "EM (" << pos_x << ',' << pos_y << ')';
+  msg << " EM (" << pos_y << ',' << pos_x << ')';
   history->enqueue(msg.str());
 }
 
 void Robot::report() {
   auto h = history->get_front();
-  while (!h) {
-    robotPrint(h->data);
-    h = h->next;
+  while (h) {
+    robotPrint(h->get_data());
+    h = h->get_next();
   }
 }
 
 void Robot::endMission() const {
-  if (!active) {
-    basePrint("NAO ESTA EM MISSAO");
-    return;
-  }
   std::ostringstream msg;
-  msg << "RETORNOU ALIENS " << alien_count << "RECURSOS " << resource_count;
+  msg << "ROBO " << id << ' ';
+  if (!active) {
+    msg << "NAO ESTA EM MISSAO";
+  } else {
+    msg << "RETORNOU ALIENS " << alien_count << " RECURSOS " << resource_count;
+  }
   basePrint(msg.str());
 }
 

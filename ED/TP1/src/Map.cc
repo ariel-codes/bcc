@@ -2,9 +2,8 @@
 // Created by Ariel Santos on 08/02/21.
 //
 
-
-#include <fstream>
 #include <cassert>
+#include <fstream>
 
 #include "Map.h"
 

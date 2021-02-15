@@ -15,42 +15,39 @@ void Base::parseCommands(const std::string &cmdfile) {
     if (command[0] == '*') {
       priority = true;
       command = command.substr(1);
-    } else priority = false;
+    } else { priority = false; }
 
-    unsigned i;
-    Robot *robot;
-    file >> i;
-    if (!robots[i]) {
-      robots[i].reset(new Robot(i, map));
-      robot = robots[i].get();
-    }
+    unsigned k;
+    file >> k;
+    if (!robots[k])
+      robots[k].reset(new Robot(k, map));
 
     if (command == "MOVER") {
       unsigned x, y;
       std::string rest;
       file >> rest;
-      std::sscanf(rest.c_str(), "(%u,%u)", &x, &y); // NOLINT(cert-err34-c)
-      robot->addCommand(Command(CmdType::Move, x, y, priority));
-    } else if (command == "COLETAR")
-      robot->addCommand(Command(CmdType::Collect, priority));
-    else if (command == "ELIMINAR")
-      robot->addCommand(Command(CmdType::Eliminate, priority));
-    else if (command == "ATIVAR")
-      robot->addCommand(Command(CmdType::Activate));
-    else if (command == "EXECUTAR")
-      robot->addCommand(Command(CmdType::Execute));
-    else if (command == "RELATORIO")
-      robot->addCommand(Command(CmdType::Report));
-    else if (command == "RETORNAR") {
-      robot->addCommand(Command(CmdType::Return));
-      resource_count += robot->get_resource_count();
-      alien_count += robot->get_alien_count();
-      robot->resetState();
+      std::sscanf(rest.c_str(), "(%u,%u)", &y, &x); // NOLINT(cert-err34-c)
+      robots[k]->addCommand(Command(Command::Move, x, y, priority));
+    } else if (command == "COLETAR") {
+      robots[k]->addCommand(Command(Command::Collect, priority));
+    } else if (command == "ELIMINAR") {
+      robots[k]->addCommand(Command(Command::Eliminate, priority));
+    } else if (command == "ATIVAR") {
+      robots[k]->addCommand(Command(Command::Activate));
+    } else if (command == "EXECUTAR") {
+      robots[k]->addCommand(Command(Command::Execute));
+    } else if (command == "RELATORIO") {
+      robots[k]->addCommand(Command(Command::Report));
+    } else if (command == "RETORNAR") {
+      robots[k]->addCommand(Command(Command::Return));
+      resource_count += robots[k]->get_resource_count();
+      alien_count += robots[k]->get_alien_count();
+      robots[k]->resetState();
     }
   }
 }
 
 void Base::printResult() const {
-  std::cout << "BASE: TOTAL ALIENS " << alien_count << " RECURSOS " << resource_count << std::endl;
+  std::cout << "BASE: TOTAL DE ALIENS " << alien_count << " RECURSOS " << resource_count << std::flush;
 }
 
