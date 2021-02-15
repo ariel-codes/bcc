@@ -52,8 +52,6 @@ void Robot::activate() {
   basePrint(msg.str());
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wswitch"
 void Robot::execute() {
   if (!active) {
     std::ostringstream msg;
@@ -71,11 +69,11 @@ void Robot::execute() {
         break;
       case Command::Eliminate: eliminate();
         break;
+      default: break;
     }
     commands->dequeue();
   }
 }
-#pragma clang diagnostic pop
 
 void Robot::move(unsigned x, unsigned y) {
   auto point = map->getPoint(x, y);
