@@ -9,12 +9,12 @@
 
 namespace sorting {
 
-void insertion(const Array&);
-void merge(Array);
-void quick(Array);
+void insertion(Array &);
+void merge(Array &);
+void quick(Array &);
 
-void quick_iter(Array);
-void cycle(Array);
+void quick_iter(Array &);
+void cycle(Array &);
 }
 
 #endif //TP2_INCLUDE_SORTING_HPP_

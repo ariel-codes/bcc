@@ -6,6 +6,7 @@
 #define TP2_SRC_DATACONTAINER_HPP_
 
 #include <string>
+#include <ostream>
 
 struct DataContainer {
   DataContainer() = default;
@@ -17,6 +18,7 @@ struct DataContainer {
   bool operator>(const DataContainer &rhs) const;
   bool operator<=(const DataContainer &rhs) const;
   bool operator>=(const DataContainer &rhs) const;
+  friend std::ostream &operator<<(std::ostream &os, const DataContainer &container);
 
   std::string data;
   unsigned key{};

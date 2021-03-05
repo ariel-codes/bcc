@@ -7,7 +7,7 @@ include_directories (include)
 
 add_executable (
     TP2
-    src/Main.cc
+    src/Main.cpp
     src/DataContainer.cpp
     src/Array.cpp
-    src/insertion.cpp)
+    src/insertionsort.cpp src/mergesort.cpp)
