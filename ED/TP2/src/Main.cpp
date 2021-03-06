@@ -14,12 +14,12 @@ int main(int argc, char *argv[]) {
 
   for (size_t i = 0; i < array.size; ++i) {
 	std::string name;
-	unsigned distance;
+	distance_t distance;
 	assert((file >> name >> distance) && "Arquivo mal-formado");
-	array[i] = DataContainer(name, distance);
+	array[i] = BaseDistancia(name, distance);
   }
 
-  sorting::merge(array);
+  sorting::quick(array);
 
   std::cout << array;
 

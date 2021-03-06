@@ -6,7 +6,7 @@
 
 namespace {
 
-Array merge_arrays(Array left, Array right) {
+Array merge_arrays(const Array &left, const Array &right) {
   Array result(left.size + right.size);
   std::size_t l_index = 0, r_index = 0;
 
@@ -34,7 +34,7 @@ void sorting::merge(Array &array) {
   if (array.size < 2) return;
 
   auto middle = array.size / 2;
-  Array left(array, 0, middle), right(array, middle);
+  auto left = array.view(0, middle), right = array.view(middle);
 
   merge(left);
   merge(right);

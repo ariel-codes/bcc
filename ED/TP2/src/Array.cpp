@@ -1,16 +1,29 @@
 //
 // Created by Ariel Santos on 02/03/21.
 //
+#include <utility>
 
 #include "Array.hpp"
 
-Array::Array(std::size_t size) : size(size), items(new DataContainer[size]) {}
+Array::Array(std::size_t size) : size(size), items(new BaseDistancia[size]) {}
 
-Array::Array(const Array &array, std::size_t start) : size(array.size - start), items(&array[start]) {}
+Array Array::view(std::size_t start) {
+  return Array{*this, start, size};
+}
 
-Array::Array(const Array &array, std::size_t start, std::size_t end) : size(end - start), items(&array[start]) {}
+Array Array::view(std::size_t start, std::size_t end) {
+  return Array{*this, start, end};
+}
 
-DataContainer &Array::operator[](std::size_t i) const {
+Array::Array(Array &array, std::size_t start, std::size_t end) : size(end - start), items(&array[start]) {
+  if (start > end) throw;
+}
+
+BaseDistancia &Array::end() const {
+  return items[size - 1];
+}
+
+BaseDistancia &Array::operator[](std::size_t i) const {
   return items[i];
 }
 

@@ -8,13 +8,12 @@
 #include "Array.hpp"
 
 namespace sorting {
+void insertion(Array &array);
+void merge(Array &array);
+void quick(Array &array);
 
-void insertion(Array &);
-void merge(Array &);
-void quick(Array &);
-
-void quick_iter(Array &);
-void cycle(Array &);
+void quick_improved(Array &array);
+void cycle(Array &array);
 }
 
 #endif //TP2_INCLUDE_SORTING_HPP_

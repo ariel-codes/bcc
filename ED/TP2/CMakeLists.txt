@@ -8,6 +8,6 @@ include_directories (include)
 add_executable (
     TP2
     src/Main.cpp
-    src/DataContainer.cpp
+    src/BaseDistancia.cpp
     src/Array.cpp
-    src/insertionsort.cpp src/mergesort.cpp)
+    src/insertionsort.cpp src/mergesort.cpp src/quicksort.cpp)
