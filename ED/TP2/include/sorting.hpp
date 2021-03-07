@@ -12,7 +12,7 @@ void insertion(Array &array);
 void merge(Array &array);
 void quick(Array &array);
 
-void quick_improved(Array &array);
+void quick_med3(Array &array);
 void cycle(Array &array);
 }
 
