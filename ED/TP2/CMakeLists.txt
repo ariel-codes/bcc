@@ -10,4 +10,4 @@ add_executable (
     src/Main.cpp
     src/BaseDistancia.cpp
     src/Array.cpp
-    src/insertionsort.cpp src/mergesort.cpp src/quicksort.cpp)
+    src/insertionsort.cpp src/mergesort.cpp src/quicksort.cpp src/cyclesort.cpp)
