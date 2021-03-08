@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 	array[i] = BaseDistancia(name, distance);
   }
 
-  sorting::merge(array);
+  sorting::quick_med3(array);
 
   std::cout << array;
 

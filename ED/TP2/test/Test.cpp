@@ -32,11 +32,11 @@ int main(int argc, char *argv[]) {
 	array[i] = BaseDistancia(name, distance);
   }
 
-  test_sort(array, sorting::insertion);
-  test_sort(array, sorting::merge);
+//  test_sort(array, sorting::insertion);
+//  test_sort(array, sorting::merge);
   test_sort(array, sorting::quick);
   test_sort(array, sorting::quick_med3);
-  test_sort(array, sorting::cycle);
+//  test_sort(array, sorting::cycle);
 
   return 0;
 }

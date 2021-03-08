@@ -8,7 +8,7 @@
 #include <string>
 #include <ostream>
 
-typedef unsigned int distance_t;
+typedef long long distance_t;
 
 struct BaseDistancia {
   BaseDistancia() = default;

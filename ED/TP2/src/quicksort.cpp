@@ -36,41 +36,36 @@ void prepare(Array &array) {
   }
 }
 
-distance_t partition(Array &array) {
-  // Aqui underflows não importam, serão corrigidos pelo ++index dps
-  std::size_t index = -1;
-  auto pivot_el = array.end();
-
-  for (int i = 0; i < array.size - 1; ++i) {
-	if (array[i] <= pivot_el)
-	  std::swap(array[++index], array[i]);
+std::ptrdiff_t partition(Array &array, distance_t pivot) {
+  ptrdiff_t i = 0;
+  for (ptrdiff_t j = array.size - 1;; i++, j--) {
+	while (array[i] < pivot) i++;
+	while (array[j] > pivot) j--;
+	if (i >= j) break;
+	std::swap(array[i], array[j]);
   }
-  std::swap(array[++index], array.end());
-
-  return index;
+  return i;
 }
 
 void quicksort(Array &&array) {
   if (array.size < 2) return;
 
-  auto index = partition(array);
+  distance_t pivot = array.items[array.size / 2];
+  std::ptrdiff_t i = partition(array, pivot);
 
-  // Checar se 0 para prevenir underflow
-  if (index)
-	quicksort(array.view(0, index - 1));
-  quicksort(array.view(index + 1));
+  quicksort(array.view(0, i));
+  quicksort(array.view(i));
 }
 
 void quicksort_med3(Array &&array) {
   if (array.size < 2) return;
 
   prepare(array);
-  auto index = partition(array);
+  distance_t pivot = array.end();
+  std::ptrdiff_t i = partition(array, pivot);
 
-  // Checar se 0 para prevenir underflow
-  if (index)
-	quicksort(array.view(0, index - 1));
-  quicksort(array.view(index + 1));
+  quicksort_med3(array.view(0, i));
+  quicksort_med3(array.view(i));
 }
 
 }
