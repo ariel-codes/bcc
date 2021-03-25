@@ -15,4 +15,4 @@ include_directories (include)
 
 add_executable (run.out
     src/Main.cc
-    src/Test.cc)
+    src/BTree.cc src/Runner.cc include/Runner.hh)
