@@ -19,8 +19,13 @@ void BTree::add_leaf(char leaf) {
   }
 }
 
-std::ostream &operator<<(std::ostream &os, const BTree &tree) {
-  if (tree.left) os << (*tree.left);
-  if (tree.right) os << (*tree.right);
-  return os;
+char BTree::get_node(Queue &coords) {
+  if (!coords.empty()) {
+	if (coords.dequeue() % 2 == 1) {
+	  return left->get_node(coords);
+	} else {
+	  return right->get_node(coords);
+	}
+  }
+  return root;
 }

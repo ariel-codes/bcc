@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
 	std::getline(file, text);
 	runner.run_command(CommandType(command), text);
   }
-  std::cout << runner.parseTree;
 
   return 0;
 }

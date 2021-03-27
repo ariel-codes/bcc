@@ -15,4 +15,4 @@ include_directories (include)
 
 add_executable (run.out
     src/Main.cc
-    src/BTree.cc src/Runner.cc include/Runner.hh)
+    src/BTree.cc src/Runner.cc src/Queue.cc)

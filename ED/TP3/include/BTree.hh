@@ -6,14 +6,16 @@
 #define TP3_SRC_BTREE_HH_
 
 #include <ostream>
+
+#include "Queue.hh"
+
 class BTree {
  public:
   BTree() = default;
   explicit BTree(char root);
 
   void add_leaf(char leaf);
-
-  friend std::ostream &operator<<(std::ostream &os, const BTree &tree);
+  char get_node(Queue &coords);
 
  private:
   char root = 0;
