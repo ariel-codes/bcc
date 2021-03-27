@@ -5,12 +5,16 @@
 #ifndef TP3_SRC_STACK_HH_
 #define TP3_SRC_STACK_HH_
 
+#include <ostream>
 class Queue {
  private:
   class LList {
 	friend class Queue;
 
 	explicit LList(char v);
+
+	friend std::ostream &operator<<(std::ostream &os, const Queue &queue);
+
 	~LList();
 
    private:
@@ -22,9 +26,12 @@ class Queue {
   Queue() = default;
   void enqueue(char value);
   char dequeue();
+  bool empty();
+
+  friend std::ostream &operator<<(std::ostream &os, const Queue &queue);
 
   ~Queue();
-  bool empty();
+
  private:
   LList *first = nullptr;
   LList *last = nullptr;

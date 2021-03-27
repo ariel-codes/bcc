@@ -29,3 +29,29 @@ char BTree::get_node(Queue &coords) {
   }
   return root;
 }
+
+Queue BTree::get_path(char node) {
+  Queue path;
+  if (node == root) {
+	path.enqueue(0);
+  } else if (node < root) {
+	path.enqueue(-1);
+	left->get_path(node, path);
+  } else {
+	path.enqueue(1);
+	right->get_path(node, path);
+  }
+  return path;
+}
+
+void BTree::get_path(char node, Queue &path) {
+  if (node == root) { return; }
+
+  if (node < root) {
+	path.enqueue(-1);
+	left->get_path(node, path);
+  } else {
+	path.enqueue(1);
+	right->get_path(node, path);
+  }
+}

@@ -35,6 +35,14 @@ bool Queue::empty() {
   return first == nullptr;
 }
 
+std::ostream &operator<<(std::ostream &os, const Queue &queue) {
+  auto cur = queue.first;
+  for (; cur != nullptr; cur = cur->next) {
+	os << cur->value;
+  }
+  return os;
+}
+
 Queue::~Queue() {
   delete first;
 }
