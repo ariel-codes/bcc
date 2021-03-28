@@ -12,11 +12,12 @@ Queue::LList::~LList() {
 
 void Queue::enqueue(char value) {
   auto new_item = new LList(value);
-  if (first == nullptr) {
+
+  if (first == nullptr)
 	first = new_item;
-  } else {
+  else
 	last->next = new_item;
-  }
+
   last = new_item;
 }
 
@@ -36,10 +37,9 @@ bool Queue::empty() {
 }
 
 std::ostream &operator<<(std::ostream &os, const Queue &queue) {
-  auto cur = queue.first;
-  for (; cur != nullptr; cur = cur->next) {
+  for (auto cur = queue.first; cur != nullptr; cur = cur->next)
 	os << cur->value;
-  }
+
   return os;
 }
 

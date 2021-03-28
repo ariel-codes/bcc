@@ -17,14 +17,15 @@ enum class CommandType : char {
 class Runner {
  public:
   Runner() = default;
+  
   void run_command(CommandType type, const std::string &text);
 
  private:
   void load(const std::string &text);
   void decode(const std::string &text);
   void encode(const std::string &text);
- public:
-  BTree parseTree;
+
+  BTree parse_tree;
 };
 
 #endif //TP3_SRC_RUNNER_HH_

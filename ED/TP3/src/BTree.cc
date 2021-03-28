@@ -10,6 +10,7 @@ BTree::BTree(char root) : root(root) {}
 
 void BTree::add_leaf(char leaf) {
   assert(leaf != root);
+
   if (leaf < root) {
 	if (left != nullptr) left->add_leaf(leaf);
 	else left = new BTree(leaf);
@@ -27,11 +28,13 @@ char BTree::get_node(Queue &coords) {
 	  return right->get_node(coords);
 	}
   }
+
   return root;
 }
 
 Queue BTree::get_path(char node) {
   Queue path;
+
   if (node == root) {
 	path.enqueue(0);
   } else if (node < root) {
@@ -41,11 +44,12 @@ Queue BTree::get_path(char node) {
 	path.enqueue(1);
 	right->get_path(node, path);
   }
+
   return path;
 }
 
 void BTree::get_path(char node, Queue &path) {
-  if (node == root) { return; }
+  if (node == root) return;
 
   if (node < root) {
 	path.enqueue(-1);

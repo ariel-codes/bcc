@@ -5,8 +5,6 @@
 #ifndef TP3_SRC_BTREE_HH_
 #define TP3_SRC_BTREE_HH_
 
-#include <ostream>
-
 #include "Queue.hh"
 
 class BTree {
@@ -20,7 +18,7 @@ class BTree {
 
  private:
   void get_path(char node, Queue &path);
-  
+
   char root = 0;
   BTree *left = nullptr, *right = nullptr;
 };
