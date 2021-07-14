@@ -1,5 +1,5 @@
 //
-// Created by Ariel Santos on 30/06/21.
+// Created by Ariel Santos on 28/06/21.
 //
 
 #include <algorithm>
@@ -18,7 +18,10 @@ void Emparelhador::emparelhar_alocacoes() {
         pessoa->inicializar_preferencias(postos);
 
         auto posto_ideal = pessoa->proxima_preferencia();
-        while (posto_ideal->cheio()) posto_ideal = pessoa->proxima_preferencia();
+        while (posto_ideal->cheio()) {
+            posto_ideal = pessoa->proxima_preferencia();
+            if (posto_ideal == nullptr) return; // todos os postos já estão cheios, podemos retornar
+        }
 
         posto_ideal->alocar(pessoa);
     }
