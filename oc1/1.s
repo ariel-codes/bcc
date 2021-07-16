@@ -24,14 +24,14 @@ move_I: # use I as divisor
 
 calc_zero: # return zero
 	li t0, 0
-	j result
+	j return
 
 calc_v: # Multiplication: x = R * I
-	mul t0, a1, a2 # discard upper 32 bits of 32x32 op
-	j result
+	mul t0, a1, a2 # discards upper 32 bits of 32x32 op, should I care about overflow?
+	j return
 
 calc_ri: # Division: x = V / y
 	div t0, a0, t1
 
-result: # set return register
+return: # set return register
 	mv a0, t0
