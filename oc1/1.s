@@ -1,8 +1,8 @@
 .text
 # Load test data to args
-li a0, 0 # a0 = V
-li a1, 5 # a1 = R
-li a2, 2 # a2 = I
+# li a0, 0 # a0 = V
+# li a1, 0 # a1 = R
+# li a2, 0 # a2 = I
 
 # Program itself
 seqz t1, a0
@@ -21,7 +21,6 @@ j calc_ri
 move_I: # use I as divisor
 	mv t1, a2
 	j calc_ri
-
 
 calc_zero: # return zero
 	li t0, 0
