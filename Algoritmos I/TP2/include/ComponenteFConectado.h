@@ -5,16 +5,15 @@
 #ifndef TP1_COMPONENTEFCONECTADO_H
 #define TP1_COMPONENTEFCONECTADO_H
 
-
-#include "Vertice.h"
+#include <memory>
 
 struct ComponenteFConectado {
     friend class AlgoritmoTarjanMod;
 
-    explicit ComponenteFConectado(VerticePtr raiz);
-
-    const VerticePtr raiz;
+    int grau_entrada = 0, grau_saida = 0;
 };
+
+typedef std::shared_ptr<ComponenteFConectado> ComponenteFCPtr;
 
 
 #endif //TP1_COMPONENTEFCONECTADO_H

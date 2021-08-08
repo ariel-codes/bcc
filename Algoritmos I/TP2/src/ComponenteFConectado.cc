@@ -3,9 +3,3 @@
 //
 
 #include "ComponenteFConectado.h"
-
-#include <utility>
-
-ComponenteFConectado::ComponenteFConectado(VerticePtr raiz) : raiz(std::move(raiz)) {
-
-}

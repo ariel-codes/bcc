@@ -5,7 +5,7 @@
 #include "Vertice.h"
 
 void Vertice::addAresta(const VerticePtr &destino) {
-    arestas.push_back(destino);
+    arestas.emplace_front(destino);
 }
 
 bool Vertice::foiIndexado() const {

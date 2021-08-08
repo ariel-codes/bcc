@@ -6,24 +6,22 @@
 #define TP1_VERTICE_H
 
 #include <memory>
-#include <vector>
-
-struct Vertice;
-
-typedef std::shared_ptr<Vertice> VerticePtr;
+#include <forward_list>
 
 struct Vertice {
     friend class AlgoritmoTarjanMod;
 
-    void addAresta(const VerticePtr &destino);
+    void addAresta(const std::shared_ptr<Vertice> &destino);
 
     bool foiIndexado() const;
 
-    std::vector<VerticePtr> arestas;
+    std::forward_list<std::shared_ptr<Vertice>> arestas;
     int indice = -1; // -1 == não indexado
-    bool esta_na_pilha = false;
     int minimo_alcancavel = -1;
+    bool esta_na_pilha = false;
 };
+
+typedef std::shared_ptr<Vertice> VerticePtr;
 
 
 #endif //TP1_VERTICE_H

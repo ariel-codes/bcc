@@ -11,7 +11,6 @@
 #include "Vertice.h"
 #include "ComponenteFConectado.h"
 
-
 class AlgoritmoTarjanMod {
 public:
 
@@ -19,11 +18,12 @@ public:
 
 private:
 
-    void condensar_cfc(const VerticePtr& raiz);
+    void condensar_cfc(const VerticePtr& vertice);
+    void calcular_graus(const std::unordered_map<int, VerticePtr> &vertices);
 
-    int indice = 0;
+    int indice = 1;
     std::stack<VerticePtr> pilha;
-    int cfcs=0;
+    std::unordered_map<int, ComponenteFCPtr> componentes_fc;
 };
 
 
