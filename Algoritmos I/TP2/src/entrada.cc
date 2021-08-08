@@ -1,10 +1,11 @@
 //
 // Created by Ariel Santos on 28/06/21.
 //
-#include <iostream>
 #include <utility>
+#include <unordered_map>
+#include <iostream>
 
-#include <entrada.h>
+#include <Entrada.h>
 
 namespace Entrada {
 
@@ -14,12 +15,12 @@ namespace Entrada {
         return std::make_pair(n_aeroportos, n_rotas);
     }
 
-    void ler_rotas(int n_rotas, std::unordered_map<int, AeroportoPtr> aeroportos) {
+    void ler_rotas(int n_rotas, std::unordered_map<int, VerticePtr> aeroportos) {
         for (int i = 0; i < n_rotas; ++i) {
             int origem, destino;
             std::cin >> origem >> destino;
             auto aeroporto = aeroportos.at(origem);
-            aeroporto->add_destino(aeroportos.at(destino));
+            aeroporto->addAresta(aeroportos.at(destino));
         }
     }
 }

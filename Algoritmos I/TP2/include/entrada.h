@@ -5,15 +5,15 @@
 #ifndef TP3_ENTRADA_H
 #define TP3_ENTRADA_H
 
-#include <memory>
+#include <utility>
 #include <unordered_map>
 
-#include "Aeroporto.h"
+#include "Vertice.h"
 
 namespace Entrada {
     std::pair<int, int> ler_quantidades();
 
-    void ler_rotas(int, std::unordered_map<int, AeroportoPtr>);
+    void ler_rotas(int, std::unordered_map<int, VerticePtr>);
 }
 
 #endif //TP3_ENTRADA_H

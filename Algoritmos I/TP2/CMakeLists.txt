@@ -15,4 +15,4 @@ include_directories(include)
 
 add_executable(tp02
         src/Main.cc
-        src/entrada.cc src/Aeroporto.cc include/Aeroporto.h src/Rota.cc include/Rota.h)
+        src/Entrada.cc src/Vertice.cc include/Vertice.h src/AlgoritmoTarjanMod.cc include/AlgoritmoTarjanMod.h src/ComponenteFConectado.cc include/ComponenteFConectado.h)
