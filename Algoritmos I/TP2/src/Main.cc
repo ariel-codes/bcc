@@ -1,12 +1,12 @@
 //
-// Created by Ariel Santos on 28/06/21.
+// Created by Ariel Santos on 01/08/21.
 //
 
 #include <unordered_map>
 #include <iostream>
 
 #include "AlgoritmoTarjanMod.h"
-#include "Entrada.h"
+#include "entrada.h"
 
 int main(int argc, char *argv[]) {
     auto quantidades = Entrada::ler_quantidades();

@@ -1,5 +1,5 @@
 CC = g++
-OPCOES = -std=c++14 -g -Wall
+OPCOES = -std=c++14 -O3 -Wall
 
 COMPILADOS = ./obj/
 FONTES = ./src/

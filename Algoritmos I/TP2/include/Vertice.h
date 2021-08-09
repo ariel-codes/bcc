@@ -1,5 +1,5 @@
 //
-// Created by Ariel Santos on 07/08/21.
+// Created by Ariel Santos on 01/08/21.
 //
 
 #ifndef TP1_VERTICE_H
