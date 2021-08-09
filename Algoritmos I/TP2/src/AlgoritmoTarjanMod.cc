@@ -30,6 +30,7 @@ int AlgoritmoTarjanMod::vertices_para_gfc(const std::unordered_map<int, VerticeP
     return std::max(fontes + isolados, vertedouros + isolados);
 }
 
+// Algoritmo de Tarjan para encontrar CFCs
 void AlgoritmoTarjanMod::condensar_cfc(const VerticePtr &vertice) {
     vertice->indice = indice;
     vertice->minimo_alcancavel = indice;
@@ -58,6 +59,7 @@ void AlgoritmoTarjanMod::condensar_cfc(const VerticePtr &vertice) {
     }
 }
 
+// Calcula os graus de entrada e saida de cada componente fortemente conexo
 void AlgoritmoTarjanMod::calcular_graus(const std::unordered_map<int, VerticePtr> &vertices) {
     for (const auto &entrada : vertices) {
         const auto fonte = entrada.second;
