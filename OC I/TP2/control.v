@@ -14,7 +14,7 @@ module control (
     output reg [31:0] ImmGen,
     input [31:0] inst
 );
-  wire [2:0] f3 = inst[14:12];  //funct3 para diferenciar as instruções de branch
+  wire [2:0] funct3 = inst[14:12];  //funct3 para diferenciar as instruções de branch
   always @(*) begin
     /* defaults */
     aluop[1:0] <= 2'b10;
@@ -42,14 +42,13 @@ module control (
         alusrc <= 1'b1;  // Tell ALU to use immediate
         ImmGen <= {{20{inst[31]}}, inst[31:20]};  // sign-extended immediate
       end
-      7'b1100011: begin  // beq == 99
-        aluop <= 2'b01;
+      7'b1100011: begin  // Branch Instructions
+        aluop <= 2'b01; // ALU
         ImmGen <= {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8], 1'b0};
         regwrite <= 1'b0;
-        //branch_eq <= 1'b1;
-        branch_eq <= (f3 == 3'b0) ? 1'b1 : 1'b0;
-        branch_ne <= (f3 == 3'b1) ? 1'b1 : 1'b0;
-        branch_lt <= (f3 == 3'b100) ? 1'b1 : 1'b0;
+        branch_eq <= funct3 == 3'b000;
+        branch_ne <= funct3 == 3'b001;
+        branch_lt <= funct3 == 3'b100;
       end
       7'b0100011: begin  /* sw */
         memwrite <= 1'b1;

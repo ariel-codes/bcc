@@ -23,6 +23,7 @@ module cpu (
   wire [4:0] wrreg_s5;
   wire [31:0] wrdata_s5;
   reg stall_s1_s2;
+  reg pcsrc;
 
   // {{{ flush control
   reg flush_s1, flush_s2, flush_s3;
@@ -383,12 +384,13 @@ module cpu (
   );
 
   // branch
-  reg pcsrc;
   always @(*) begin
-    case (1'b1)
-      branch_eq_s4: pcsrc <= zero_s4;
-      branch_ne_s4: pcsrc <= ~(zero_s4);
-      branch_lt_s4: pcsrc <= alurslt_s4[31];
+    case ({
+      branch_eq_s4, branch_ne_s4, branch_lt_s4
+    })
+      3'b100: pcsrc <= zero_s4;
+      3'b010: pcsrc <= ~(zero_s4);
+      3'b001: pcsrc <= alurslt_s4[31];
 
       default: pcsrc <= 1'b0;
     endcase
