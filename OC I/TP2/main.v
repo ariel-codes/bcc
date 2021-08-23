@@ -391,6 +391,7 @@ module cpu (
       3'b100: pcsrc <= zero_s4;
       3'b010: pcsrc <= ~(zero_s4);
       3'b001: pcsrc <= alurslt_s4[31];
+      3'b011: pcsrc <= ~(zero_s4) && ~(alurslt_s4[31]); // Greater Than = !equal && !less than
 
       default: pcsrc <= 1'b0;
     endcase

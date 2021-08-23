@@ -46,9 +46,18 @@ module control (
         aluop <= 2'b01; // ALU
         ImmGen <= {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8], 1'b0};
         regwrite <= 1'b0;
-        branch_eq <= funct3 == 3'b000;
-        branch_ne <= funct3 == 3'b001;
-        branch_lt <= funct3 == 3'b100;
+        case (funct3)
+          3'b000, 3'b001, 3'b100: begin // BEQ, BNE, BLT
+            branch_eq <= funct3 == 3'b000;
+            branch_ne <= funct3 == 3'b001;
+            branch_lt <= funct3 == 3'b100;
+          end
+          3'b101: begin // BGE
+            branch_eq <= 1'b0;
+            branch_ne <= 1'b1;
+            branch_lt <= 1'b1;
+          end
+        endcase
       end
       7'b0100011: begin  /* sw */
         memwrite <= 1'b1;
