@@ -24,13 +24,14 @@ module alu (
   assign slt = oflow_sub ? ~(a[31]) : a[31];
   always @(*) begin
     case (ctl)
-      4'd2: out <= add_ab;  /* add */
-      4'd0: out <= a & b;  /* and */
-      4'd12: out <= ~(a | b);  /* nor */
-      4'd1: out <= a | b;  /* or */
-      4'd7: out <= {{31{1'b0}}, slt};  /* slt */
-      4'd6: out <= sub_ab;  /* sub */
-      4'd13: out <= a ^ b;  /* xor */
+      4'd0: out <= a & b;  // and
+      4'd1: out <= a | b;  // or
+      4'd2: out <= add_ab;  // add
+      4'd6: out <= sub_ab;  // sub
+      4'd7: out <= {{31{1'b0}}, slt};  // slt
+      4'd12: out <= ~(a | b);  // nor
+      4'd13: out <= a ^ b;  // xor
+      4'd16: out <= a << b[4:0];  // shift left
       default: out <= 0;
     endcase
   end
@@ -48,23 +49,24 @@ module alu_control (
 
   always @(*) begin
     case (funct[3:0])
-      4'b0000: _funct = 4'd2;  // ADD
-      4'b0010: _funct = 4'd7;  // SLT
-      4'b0100: _funct = 4'd13; // XOR
-      4'b0110: _funct = 4'd1;  // OR
-      4'b0111: _funct = 4'd12; // NOR
-      4'b0111: _funct = 4'd0;  // AND
-      4'b1000: _funct = 4'd6;  // SUB
-      default: _funct = 4'd0;
+      4'b0000: _funct = 4'd02;  // ADD
+      4'b0001: _funct = 4'd16;  // SLL
+      4'b0010: _funct = 4'd07;  // SLT
+      4'b0100: _funct = 4'd13;  // XOR
+      4'b0110: _funct = 4'd01;  // OR
+      4'b0111: _funct = 4'd12;  // NOR
+      4'b0111: _funct = 4'd00;  // AND
+      4'b1000: _funct = 4'd06;  // SUB
+      default: _funct = 4'd00;
     endcase
   end
 
   always @(*) begin
     case (aluop)
-      2'b00:   aluctl = 4'd2;  /* add */
-      2'b01:   aluctl = 4'd6;  /* sub */
-      2'b10:   aluctl = _funct;
-      2'b11:   aluctl = 4'd2;  /* add */
+      2'b00:   aluctl = 4'd2;  // add
+      2'b01:   aluctl = 4'd6;  // sub
+      2'b10:   aluctl = _funct;  // use funct3 field
+      2'b11:   aluctl = 4'd2;  // add
       default: aluctl = 0;
     endcase
   end
