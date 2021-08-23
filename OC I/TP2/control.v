@@ -37,22 +37,19 @@ module control (
         memread <= 1'b1;
         ImmGen <= {{20{inst[31]}}, inst[31:20]};
       end
-      7'b0010011: begin  /* addi */
-        //regdst   <= 1'b0; // rt or rd (only mips)
-        aluop[1] <= 1'b0;
-        alusrc   <= 1'b1;
-        ImmGen   <= {{20{inst[31]}}, inst[31:20]};
+      7'b0010011: begin  // Integer Register-Immediate Instructions
+        aluop <= 2'b10;  // ALU will use funct3 field
+        alusrc <= 1'b1;  // Tell ALU to use immediate
+        ImmGen <= {{20{inst[31]}}, inst[31:20]};  // sign-extended immediate
       end
       7'b1100011: begin  // beq == 99
-        aluop <= 2'b1;
+        aluop <= 2'b01;
         ImmGen <= {{19{inst[31]}}, inst[31], inst[7], inst[30:25], inst[11:8], 1'b0};
         regwrite <= 1'b0;
         //branch_eq <= 1'b1;
         branch_eq <= (f3 == 3'b0) ? 1'b1 : 1'b0;
         branch_ne <= (f3 == 3'b1) ? 1'b1 : 1'b0;
         branch_lt <= (f3 == 3'b100) ? 1'b1 : 1'b0;
-
-
       end
       7'b0100011: begin  /* sw */
         memwrite <= 1'b1;

@@ -11,7 +11,7 @@ wire [15:0] imm;
 wire [ 4:0] shamt;
 wire [31:0] jaddr_s2;
 wire [31:0] seimm;  // sign extended immediate
-//
+
 assign opcode   = inst_s2[31:26];
 assign opcoderv = inst_s2[6:0];
 assign rs       = inst_s2[25:21];
