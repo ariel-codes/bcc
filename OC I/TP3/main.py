@@ -1,5 +1,6 @@
 # Ariel A. Santos - September 2021
 # CC Licensed
+
 import re
 from dataclasses import dataclass
 from sys import stdin
@@ -115,7 +116,9 @@ class Memory:
 
 
 if __name__ == '__main__':
+
     memory = Memory()
     for line in stdin:
         memory.process_command(line)
-    print(memory.report(), end='')
+    with open("result.txt", "w") as f:
+        f.write(memory.report())
