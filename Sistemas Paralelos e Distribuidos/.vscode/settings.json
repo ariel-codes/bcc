@@ -1,0 +1,10 @@
+{
+	"C_Cpp.clang_format_fallbackStyle": "LLVM",
+	"C_Cpp.default.cStandard": "c11",
+	"C_Cpp.default.compilerPath": "/usr/bin/gcc",
+	"C_Cpp.default.intelliSenseMode": "gcc-x64",
+	"files.associations": {
+		"stdlib.h": "c",
+		"complex": "c"
+	}
+}
